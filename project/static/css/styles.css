@@ -1,0 +1,29 @@
+.card {
+    display: flex;
+    padding: 0% 2rem;
+    margin: 2rem 0%;
+}
+
+html {
+    color: aliceblue;
+    background-color: #27282b;
+}
+body {
+    color: aliceblue;
+    background-color: #27282b;
+}
+
+.form-container {
+    margin: auto;
+    width: 40rem;
+    justify-content: center;
+}
+
+.alert{
+    text-align: center;
+}
+
+#InputContent {
+    height: 14rem;
+    resize: none;
+}

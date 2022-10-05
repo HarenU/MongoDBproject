@@ -1,0 +1,24 @@
+{% extends "base.html" %} {% block title %}You've logged in {% endblock %} {%
+block content %}
+<p>This is the user feed of {{ user }}</p>
+
+{% for post in posts %}
+<div>
+  <div class="card text-center text-white bg-dark mb-3">
+    <div class="card-body">
+      <h5 class="card-title">{{post.title}}</h5>
+      <p class="card-text">{{post.content}}</p>
+      <h6 class="post-subtitle mb-2">Posted by: {{post.creator}}</h6>
+    </div>
+    <div class="card-footer text-muted">
+      <a href="{{ url_for('deletePost',post_id = post._id) }}">
+        <button class="btn btn-primary">Delete</button></a
+      >
+      <a href="{{ url_for('updatePost',post_id = post._id) }}">
+        <button onclick="" class="btn btn-primary">Edit</button>
+      </a>
+    </div>
+  </div>
+</div>
+
+{% endfor %} {% endblock %}
