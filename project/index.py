@@ -11,10 +11,11 @@ from datetime import datetime
 url = "/project/templates/"
 app = Flask(__name__)
 
+PASSWORD = getPassword()
 
 app.secret_key = "testing"
 client = pymongo.MongoClient(
-    'mongodb+srv://HarenAdmin:' +getPassword()+ '@cluster0.xvhizro.mongodb.net/test')
+    'mongodb+srv://HarenAdmin:' +PASSWORD+ '@cluster0.xvhizro.mongodb.net/test')
 
 db = client.get_database('blog_app')
 records = db.user
@@ -41,7 +42,7 @@ def index():
             return render_template('index.html', message=message)
         else:
             hashed = bcrypt.hashpw(password2.encode('utf-8'), bcrypt.gensalt())
-            user_input = {'user': user, 'password': hashed}
+            user_input = {'user': user, 'password': hashed, 'type': 'User'}
             records.insert_one(user_input)
             
             user_data = records.find_one({"user": user})
@@ -100,8 +101,6 @@ def newpost():
         message = 'Session Expired! Please login to your account'
         return redirect(url_for("login"))
 
-    if title == "" or content == "":
-        return render_template('newpost.html')
     
     if request.method == "POST":
 
@@ -145,12 +144,25 @@ def deletePost(post_id):
     posts = db.post.find({"creator": session["user"]})
     return render_template('userfeed.html', posts=posts, user=session["user"])
 
+@app.route("/deletepost/<post_id>")
+def adminDeletePost(post_id):
+    print("adminDel")
+    db.post.delete_one({"_id":ObjectId(post_id,)})
+    posts = db.post.find({"creator": session["user"]})
+    return render_template('mainfeed.html', posts=posts, user=session["user"])
+
 
 
 @app.route("/mainfeed", methods=["POST", "GET"])
 def mainfeed():
     posts = db.post.find()
-    return render_template('mainfeed.html', posts=posts)
+    print(posts)
+    if "user" in session:
+        user = db.user.find_one({"user": session["user"]})
+        return render_template('mainfeed.html', posts=posts, user=user)
+    else:
+        user = "test"
+        return render_template('mainfeed.html', posts=posts, user=user)
 
 @app.route("/userfeed", methods=["POST", "GET"])
 def userfeed():
